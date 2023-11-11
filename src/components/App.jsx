@@ -4,19 +4,20 @@ import { nanoid } from 'nanoid';
 import { ContactForm } from './ContactForm/ContactForm';
 import { Filter } from './Filter/Filter';
 import { ContactList } from './ContactList/ContactList';
+import { ContactListEmpty } from './ContactList/ContactList.styled';
 import {
   Container,
   MainHeader,
   SectionHeader,
 } from './Container/Container.styled';
 
-import initialContacts from 'data/initialContacts.json';
+// import initialContacts from 'data/initialContacts.json';
 
 // ===========================================================
 
 export class App extends Component {
   state = {
-    contacts: initialContacts,
+    contacts: [],
     filter: '',
   };
 
@@ -25,6 +26,22 @@ export class App extends Component {
       filter: newFilter,
     });
   };
+
+  componentDidMount() {
+    const savedContacts = localStorage.getItem('savedContacts');
+    if (savedContacts) {
+      this.setState({ contacts: JSON.parse(savedContacts) });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.contacts !== this.state.contacts) {
+      localStorage.setItem(
+        'savedContacts',
+        JSON.stringify(this.state.contacts)
+      );
+    }
+  }
 
   getVisibleContacts = () => {
     const { contacts, filter } = this.state;
@@ -56,7 +73,7 @@ export class App extends Component {
   };
 
   render() {
-    const { filter } = this.state;
+    const { contacts, filter } = this.state;
 
     const visibleContacts = this.getVisibleContacts().sort(
       (prevContact, nextContact) =>
@@ -70,10 +87,14 @@ export class App extends Component {
 
         <SectionHeader>Contacts</SectionHeader>
         <Filter filter={filter} onChangeFilter={this.changeFilter} />
-        <ContactList
-          contacts={visibleContacts}
-          onDeleteContact={this.deleteContact}
-        />
+        {contacts.length ? (
+          <ContactList
+            contacts={visibleContacts}
+            onDeleteContact={this.deleteContact}
+          />
+        ) : (
+          <ContactListEmpty>Contacts list is empty</ContactListEmpty>
+        )}
       </Container>
     );
   }
