@@ -4,7 +4,7 @@ import { nanoid } from 'nanoid';
 import { ContactForm } from './ContactForm/ContactForm';
 import { Filter } from './Filter/Filter';
 import { ContactList } from './ContactList/ContactList';
-import { ContactListEmpty } from './ContactList/ContactList.styled';
+import { EmptyContactList } from './EmptyContactList/EmptyContactList.styled';
 import {
   Container,
   MainHeader,
@@ -93,7 +93,7 @@ export class App extends Component {
             onDeleteContact={this.deleteContact}
           />
         ) : (
-          <ContactListEmpty>Contacts list is empty</ContactListEmpty>
+          <EmptyContactList>Contacts list is empty</EmptyContactList>
         )}
       </Container>
     );
